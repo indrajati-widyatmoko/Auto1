@@ -10,7 +10,7 @@ jobs:
 
 - job: 'Test'
   pool:
-    vmImage: 'vs2017-win2016'
+    vmImage: 'ubuntu-latest'
   strategy:
     matrix:
       Python37:
@@ -23,7 +23,12 @@ jobs:
       versionSpec: '$(python.version)'
       architecture: 'x64'
 
-  - script: pip install robotframework robotframework-seleniumlibrary && npm install -g chromedriver
+  - script: pip install robotframework robotframework-seleniumlibrary && wget https://chromedriver.storage.googleapis.com/78.0.3904.70/chromedriver_linux64.zip \
+            && unzip chromedriver_linux64.zip \
+          	&& rm chromedriver_linux64.zip \
+	          && mv chromedriver /usr/local/bin \
+	          && chmod +x /usr/local/bin/chromedriver
+            
     displayName: 'Install dependencies'
   
   - powershell: robot --pythonpath . -x outputxunit.xml TestCases.robot
